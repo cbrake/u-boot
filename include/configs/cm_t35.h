@@ -190,14 +190,13 @@
 /* Environment information */
 #define CONFIG_BOOTDELAY		10
 
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x82000000\0" \
 	"usbtty=cdc_acm\0" \
 	"console=ttyO2,115200n8\0" \
 	"mpurate=500\0" \
 	"vram=12M\0" \
-	"dvimode=1024x768MR-16@60\0" \
-	"defaultdisplay=dvi\0" \
 	"mmcdev=0\0" \
 	"mmcroot=/dev/mmcblk0p2 rw\0" \
 	"mmcrootfstype=ext3 rootwait\0" \
@@ -206,17 +205,14 @@
 	"mmcargs=setenv bootargs console=${console} " \
 		"mpurate=${mpurate} " \
 		"vram=${vram} " \
-		"omapfb.mode=dvi:${dvimode} " \
 		"omapfb.debug=y " \
-		"omapdss.def_disp=${defaultdisplay} " \
+		"omap-dss.debug=y " \
 		"root=${mmcroot} " \
 		"rootfstype=${mmcrootfstype}\0" \
 	"nandargs=setenv bootargs console=${console} " \
 		"mpurate=${mpurate} " \
 		"vram=${vram} " \
-		"omapfb.mode=dvi:${dvimode} " \
 		"omapfb.debug=y " \
-		"omapdss.def_disp=${defaultdisplay} " \
 		"root=${nandroot} " \
 		"rootfstype=${nandrootfstype}\0" \
 	"loadbootscript=fatload mmc ${mmcdev} ${loadaddr} boot.scr\0" \
