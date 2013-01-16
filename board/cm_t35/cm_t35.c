@@ -153,6 +153,25 @@ int misc_init_r(void)
 	return 0;
 }
 
+static void cm_dugen2_set_muxconf(void)
+{
+
+	/* note, this table overrides some of the common functions 
+	 * we limit modifications to the common functions to ease merging
+	 * with new versions
+	 */
+
+	MUX_VAL(CP(UART1_RX),		(IEN  | PTD | DIS | M0)); /*UART1_RX*/
+	MUX_VAL(CP(UART1_TX),		(IEN  | PTD | DIS | M0)); /*UART1_TX*/
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
+	MUX_VAL(CP(UART1_RTS),		(IEN  | PTD | DIS | M0)); /*UART1_RTS*/
+
+	MUX_VAL(CP(DSS_DATA4),		(IEN  | PTD | DIS | M4)); /*LCD_SHTDN_N*/
+	MUX_VAL(CP(SYS_CLKOUT1),	(IEN  | PTD | EN  | M4)); /*DVI_PDn*/
+
+}
+
 /*
  * Routine: set_muxconf_regs
  * Description: Setting up the configuration Mux registers specific to the
@@ -358,10 +377,13 @@ void set_muxconf_regs(void)
 {
 	cm_t3x_set_common_muxconf();
 
+
 	if (get_cpu_family() == CPU_OMAP34XX)
 		cm_t35_set_muxconf();
 	else
 		cm_t3730_set_muxconf();
+
+	cm_dugen2_set_muxconf();
 }
 
 #ifdef CONFIG_GENERIC_MMC
