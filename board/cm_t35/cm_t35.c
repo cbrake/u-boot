@@ -44,10 +44,124 @@
 #include <asm/arch/mmc_host_def.h>
 #include <asm/arch/sys_proto.h>
 #include <asm/mach-types.h>
+#include <asm/gpio.h>
 
 #include "eeprom.h"
 
 DECLARE_GLOBAL_DATA_PTR;
+
+/*
+ **************************************************
+ * DUGen2 specific 
+ **************************************************
+ */
+
+static void du_set_muxconf(void)
+{
+	/* note, this table overrides some of the common functions 
+	 * we limit modifications to the common functions to ease merging
+	 * with new versions
+	 */
+
+	MUX_VAL(CP(UART1_RX),		(IEN  | PTD | DIS | M0)); /*UART1_RX*/
+	MUX_VAL(CP(UART1_TX),		(IEN  | PTD | DIS | M0)); /*UART1_TX*/
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
+	MUX_VAL(CP(UART1_RTS),		(IEN  | PTD | DIS | M0)); /*UART1_RTS*/
+
+	MUX_VAL(CP(DSS_DATA4),		(IEN  | PTD | DIS | M4)); /*LCD_SHTDN_N*/
+	MUX_VAL(CP(SYS_CLKOUT1),	(IEN  | PTD | EN  | M4)); /*DVI_PDn*/
+
+	MUX_VAL(CP(GPMC_A4),		(IEN  | PTU | EN  | M4)); /*USB_HUB_RESET*/
+	MUX_VAL(CP(HDQ_SIO),            (IEN  | PTD | DIS | M4)); /*OMAP_DUG_7*/
+	MUX_VAL(CP(CAM_D10),            (IEN  | PTD | EN  | M4)); /*AUDIO_SDn*/
+
+	MUX_VAL(CP(GPMC_NCS3),          (IEN  | PTU | EN  | M0)); /*GPMC_CS3 (UART)*/
+	MUX_VAL(CP(GPMC_NCS4),		(IEN  | PTU | EN  | M0)); /*GPMC_CS4 (UART)*/
+	MUX_VAL(CP(GPMC_NCS7),		(IEN  | PTU | EN  | M0)); /*GPMC_CS7 (UART)*/
+
+	MUX_VAL(CP(MCBSP1_DR),          (IEN  | PTD | EN  | M4)); /*GPMC_OE (buffer enable, not bus
+								    strobe*/
+	MUX_VAL(CP(GPMC_CLK),           (IEN  | PTU | EN  | M4)); /*8T245_OEn*/
+}
+
+#define DU_GPIO_USB_RESET	37
+#define DU_GPIO_I2C3_SDA	185
+#define DU_GPIO_I2C3_SCL	184
+#define DU_GPIO_OMAP_DUG_7	170
+#define DU_GPIO_GPMC_OE         159
+#define DU_GPIO_8T245_OE_N	59
+
+static void du_reset_usb_hub(void)
+{
+	printf("DU: Reset USB Hub\n");
+
+	// set I2C3 signals low, toggle reset, and the
+	// set I2C3 signals back to I2C
+	MUX_VAL(CP(I2C3_SCL),		(IEN  | PTU | EN  | M4)); /*I2C3_SCL*/
+	MUX_VAL(CP(I2C3_SDA),		(IEN  | PTU | EN  | M4)); /*I2C3_SDA*/
+
+	gpio_direction_output(DU_GPIO_USB_RESET, 1);
+	gpio_direction_output(DU_GPIO_I2C3_SCL, 0);
+	gpio_direction_output(DU_GPIO_I2C3_SDA, 0);
+
+	udelay(100);
+	gpio_set_value(DU_GPIO_USB_RESET, 0);
+	udelay(100);
+	gpio_set_value(DU_GPIO_USB_RESET, 1);
+	udelay(100);
+	gpio_set_value(DU_GPIO_I2C3_SCL, 1);
+	gpio_set_value(DU_GPIO_I2C3_SDA, 1);
+	
+	MUX_VAL(CP(I2C3_SCL),		(IEN  | PTU | EN  | M0)); /*I2C3_SCL*/
+	MUX_VAL(CP(I2C3_SDA),		(IEN  | PTU | EN  | M0)); /*I2C3_SDA*/
+
+	gpio_direction_output(DU_GPIO_OMAP_DUG_7, 1);
+}
+
+#define UART_GPMC_CONFIG1                      0x00011000
+#define UART_GPMC_CONFIG2                      0x001F1F01
+#define UART_GPMC_CONFIG3                      0x00080803
+#define UART_GPMC_CONFIG4                      0x1D091D09
+#define UART_GPMC_CONFIG5                      0x041D1F1F
+#define UART_GPMC_CONFIG6                      0x1D0904C4
+
+#define UART1_ADDR		0x1000000
+#define UART2_ADDR		0x2000000
+#define UART3_ADDR		0x3000000
+
+static u32 gpmc_uart_config[] = {
+	UART_GPMC_CONFIG1,
+	UART_GPMC_CONFIG2,
+	UART_GPMC_CONFIG3,
+	UART_GPMC_CONFIG4,
+	UART_GPMC_CONFIG5,
+	UART_GPMC_CONFIG6,
+};
+
+static void du_init()
+{
+	printf("DU: setting up UART chip selects\n");
+
+	// enable UART bus buffers
+
+	gpio_direction_output(DU_GPIO_GPMC_OE, 1);
+	gpio_direction_output(DU_GPIO_8T245_OE_N, 0);
+
+	enable_gpmc_cs_config(gpmc_uart_config, &gpmc_cfg->cs[3],
+			      UART1_ADDR, GPMC_SIZE_16M);
+	enable_gpmc_cs_config(gpmc_uart_config, &gpmc_cfg->cs[4],
+			      UART2_ADDR, GPMC_SIZE_16M);
+	enable_gpmc_cs_config(gpmc_uart_config, &gpmc_cfg->cs[7],
+			      UART3_ADDR, GPMC_SIZE_16M);
+}
+
+
+/*
+ **************************************************
+ * End DUGen2 specific 
+ **************************************************
+ */
 
 const omap3_sysinfo sysinfo = {
 	DDR_DISCRETE,
@@ -100,9 +214,12 @@ int board_early_init_f(void)
 int board_init(void)
 {
 	gpmc_init(); /* in SRAM or SDRAM, finish GPMC */
+	du_init();
 
+#if 0
 	enable_gpmc_cs_config(gpmc_nand_config, &gpmc_cfg->cs[0],
 			      CONFIG_SYS_NAND_BASE, GPMC_SIZE_16M);
+#endif
 
 	/* board id for Linux */
 	if (get_cpu_family() == CPU_OMAP34XX)
@@ -116,6 +233,8 @@ int board_init(void)
 #if defined(CONFIG_STATUS_LED) && defined(STATUS_LED_BOOT)
 	status_led_set(STATUS_LED_BOOT, STATUS_LED_ON);
 #endif
+
+	du_reset_usb_hub();
 
 	return 0;
 }
@@ -153,24 +272,6 @@ int misc_init_r(void)
 	return 0;
 }
 
-static void cm_dugen2_set_muxconf(void)
-{
-
-	/* note, this table overrides some of the common functions 
-	 * we limit modifications to the common functions to ease merging
-	 * with new versions
-	 */
-
-	MUX_VAL(CP(UART1_RX),		(IEN  | PTD | DIS | M0)); /*UART1_RX*/
-	MUX_VAL(CP(UART1_TX),		(IEN  | PTD | DIS | M0)); /*UART1_TX*/
-	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
-	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
-	MUX_VAL(CP(UART1_RTS),		(IEN  | PTD | DIS | M0)); /*UART1_RTS*/
-
-	MUX_VAL(CP(DSS_DATA4),		(IEN  | PTD | DIS | M4)); /*LCD_SHTDN_N*/
-	MUX_VAL(CP(SYS_CLKOUT1),	(IEN  | PTD | EN  | M4)); /*DVI_PDn*/
-
-}
 
 /*
  * Routine: set_muxconf_regs
@@ -383,7 +484,7 @@ void set_muxconf_regs(void)
 	else
 		cm_t3730_set_muxconf();
 
-	cm_dugen2_set_muxconf();
+	du_set_muxconf();
 }
 
 #ifdef CONFIG_GENERIC_MMC
@@ -483,6 +584,8 @@ static int handle_mac_address(void)
  */
 int board_eth_init(bd_t *bis)
 {
+	return 0;
+
 	int rc = 0, rc1 = 0;
 
 	setup_net_chip_gmpc();

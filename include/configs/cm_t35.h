@@ -130,9 +130,9 @@
 #define CONFIG_CMD_CACHE
 #define CONFIG_CMD_EXT2		/* EXT2 Support			*/
 #define CONFIG_CMD_FAT		/* FAT support			*/
-#define CONFIG_CMD_JFFS2	/* JFFS2 Support		*/
-#define CONFIG_CMD_MTDPARTS	/* Enable MTD parts commands */
-#define CONFIG_MTD_DEVICE	/* needed for mtdparts commands */
+//#define CONFIG_CMD_JFFS2	/* JFFS2 Support		*/
+//#define CONFIG_CMD_MTDPARTS	/* Enable MTD parts commands */
+//#define CONFIG_MTD_DEVICE	/* needed for mtdparts commands */
 #define MTDIDS_DEFAULT		"nand0=nand"
 #define MTDPARTS_DEFAULT	"mtdparts=nand:512k(x-loader),"\
 				"1920k(u-boot),128k(u-boot-env),"\
@@ -140,11 +140,11 @@
 
 #define CONFIG_CMD_I2C		/* I2C serial bus support	*/
 #define CONFIG_CMD_MMC		/* MMC support			*/
-#define CONFIG_CMD_NAND		/* NAND support			*/
-#define CONFIG_CMD_DHCP
-#define CONFIG_CMD_PING
+//#define CONFIG_CMD_NAND		/* NAND support			*/
+//#define CONFIG_CMD_DHCP
+//#define CONFIG_CMD_PING
 
-#undef CONFIG_CMD_FLASH		/* flinfo, erase, protect	*/
+//#undef CONFIG_CMD_FLASH		/* flinfo, erase, protect	*/
 #undef CONFIG_CMD_FPGA		/* FPGA configuration Support	*/
 #undef CONFIG_CMD_IMLS		/* List all found images	*/
 
@@ -179,7 +179,7 @@
 
 #define CONFIG_SYS_MAX_NAND_DEVICE	1		/* Max number of NAND */
 							/* devices */
-#define CONFIG_JFFS2_NAND
+//#define CONFIG_JFFS3_NAND
 /* nand device jffs2 lives on */
 #define CONFIG_JFFS2_DEV		"nand0"
 /* start of jffs2 partition */
@@ -287,6 +287,7 @@
 #define CONFIG_NR_DRAM_BANKS	1	/* CS1 is never populated */
 #define PHYS_SDRAM_1		OMAP34XX_SDRC_CS0
 #define PHYS_SDRAM_1_SIZE	(32 << 20)	/* at least 32 MiB */
+
 
 /*-----------------------------------------------------------------------
  * FLASH and environment organization
