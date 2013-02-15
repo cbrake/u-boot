@@ -205,6 +205,7 @@
 	"mmcargs=setenv bootargs console=${console} " \
 		"mpurate=${mpurate} " \
 		"vram=${vram} " \
+		"omapfb.mode=dvi:640x480MR-16@60 " \
 		"omapfb.debug=y " \
 		"omap-dss.debug=y " \
 		"root=${mmcroot} " \
