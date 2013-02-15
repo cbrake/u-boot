@@ -83,6 +83,11 @@ static void du_set_muxconf(void)
 	MUX_VAL(CP(MCBSP1_DR),          (IEN  | PTD | EN  | M4)); /*GPMC_OE (buffer enable, not bus
 								    strobe*/
 	MUX_VAL(CP(GPMC_CLK),           (IEN  | PTU | EN  | M4)); /*8T245_OEn*/
+
+	MUX_VAL(CP(MCBSP1_CLKX),        (IEN  | PTD | EN  | M4)); /*DU_GPIO_UART_A_IRQ*/
+	MUX_VAL(CP(MCBSP1_FSX),         (IEN  | PTD | EN  | M4)); /*DU_GPIO_UART_B_IRQ*/
+	MUX_VAL(CP(MCBSP1_CLKR),        (IEN  | PTD | EN  | M4)); /*DU_GPIO_UART_C_IRQ*/
+	MUX_VAL(CP(JTAG_EMU1),          (IEN  | PTD | EN  | M4)); /*DU_GPIO_UART_D_IRQ*/
 }
 
 #define DU_GPIO_USB_RESET	37
@@ -91,6 +96,10 @@ static void du_set_muxconf(void)
 #define DU_GPIO_OMAP_DUG_7	170
 #define DU_GPIO_GPMC_OE         159
 #define DU_GPIO_8T245_OE_N	59
+#define DU_GPIO_UART_A_IRQ	162
+#define DU_GPIO_UART_B_IRQ	161
+#define DU_GPIO_UART_C_IRQ	156
+#define DU_GPIO_UART_D_IRQ	31
 
 static void du_reset_usb_hub(void)
 {
