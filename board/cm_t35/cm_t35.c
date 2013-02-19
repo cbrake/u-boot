@@ -334,6 +334,12 @@ static void cm_t35_set_muxconf(void)
 	MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTU | EN  | M0)); /*MMC1_DAT5*/
 	MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTU | EN  | M0)); /*MMC1_DAT6*/
 	MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTU | EN  | M0)); /*MMC1_DAT7*/
+
+	/* UART1 */
+	MUX_VAL(CP(UART1_RX),		(IEN  | PTD | DIS | M0)); /*UART1_RX*/
+	MUX_VAL(CP(UART1_TX),		(IEN  | PTD | DIS | M0)); /*UART1_TX*/
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | DIS | M0)); /*UART1_CTS*/
+	MUX_VAL(CP(UART1_RTS),		(IEN  | PTD | DIS | M0)); /*UART1_RTS*/
 }
 
 static void cm_t3730_set_muxconf(void)
