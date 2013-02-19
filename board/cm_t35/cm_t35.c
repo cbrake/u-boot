@@ -72,7 +72,8 @@ static void du_set_muxconf(void)
 	MUX_VAL(CP(DSS_DATA4),		(IEN  | PTD | DIS | M4)); /*LCD_SHTDN_N*/
 	MUX_VAL(CP(SYS_CLKOUT1),	(IEN  | PTD | EN  | M4)); /*DVI_PDn*/
 
-	MUX_VAL(CP(GPMC_A4),		(IEN  | PTU | EN  | M4)); /*USB_HUB_RESET*/
+	MUX_VAL(CP(GPMC_A4),		(IEN  | PTD | EN  | M4)); /*USB_MFI_RESET*/
+	MUX_VAL(CP(GPMC_A6),		(IEN  | PTU | EN  | M4)); /*USB_HUB_RESET*/
 	MUX_VAL(CP(HDQ_SIO),            (IEN  | PTD | DIS | M4)); /*OMAP_DUG_7*/
 	MUX_VAL(CP(CAM_D10),            (IEN  | PTD | EN  | M4)); /*AUDIO_SDn*/
 
@@ -90,7 +91,8 @@ static void du_set_muxconf(void)
 	MUX_VAL(CP(JTAG_EMU1),          (IEN  | PTD | EN  | M4)); /*DU_GPIO_UART_D_IRQ*/
 }
 
-#define DU_GPIO_USB_RESET	37
+#define DU_GPIO_MFI_RESET	37
+#define DU_GPIO_USB_RESET_N	39
 #define DU_GPIO_I2C3_SDA	185
 #define DU_GPIO_I2C3_SCL	184
 #define DU_GPIO_OMAP_DUG_7	170
@@ -110,14 +112,14 @@ static void du_reset_usb_hub(void)
 	MUX_VAL(CP(I2C3_SCL),		(IEN  | PTU | EN  | M4)); /*I2C3_SCL*/
 	MUX_VAL(CP(I2C3_SDA),		(IEN  | PTU | EN  | M4)); /*I2C3_SDA*/
 
-	gpio_direction_output(DU_GPIO_USB_RESET, 1);
+	gpio_direction_output(DU_GPIO_USB_RESET_N, 1);
 	gpio_direction_output(DU_GPIO_I2C3_SCL, 0);
 	gpio_direction_output(DU_GPIO_I2C3_SDA, 0);
 
 	udelay(100);
-	gpio_set_value(DU_GPIO_USB_RESET, 0);
+	gpio_set_value(DU_GPIO_USB_RESET_N, 0);
 	udelay(100);
-	gpio_set_value(DU_GPIO_USB_RESET, 1);
+	gpio_set_value(DU_GPIO_USB_RESET_N, 1);
 	udelay(100);
 	gpio_set_value(DU_GPIO_I2C3_SCL, 1);
 	gpio_set_value(DU_GPIO_I2C3_SDA, 1);
