@@ -169,7 +169,7 @@
  * Board NAND Info.
  */
 #define CONFIG_SYS_NAND_QUIET_TEST
-#define CONFIG_NAND_OMAP_GPMC
+#undef CONFIG_NAND_OMAP_GPMC
 #define CONFIG_SYS_NAND_ADDR		NAND_BASE	/* physical address */
 							/* to access nand */
 #define CONFIG_SYS_NAND_BASE		NAND_BASE	/* physical address */
@@ -302,10 +302,10 @@
 #define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
 #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* Reserve 2 sectors */
 
-#define CONFIG_ENV_MULTI
+#undef CONFIG_ENV_MULTI
 #define CONFIG_ENV_MULTI_DEFAULT	ENV_NAND
 
-#define CONFIG_ENV_IS_IN_NAND
+#undef CONFIG_ENV_IS_IN_NAND
 #define SMNAND_ENV_OFFSET		0x260000 /* environment starts here */
 #define CONFIG_ENV_OFFSET		SMNAND_ENV_OFFSET
 #define CONFIG_ENV_ADDR			SMNAND_ENV_OFFSET

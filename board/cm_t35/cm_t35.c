@@ -207,12 +207,14 @@ static u32 gpmc_nand_config[GPMC_MAX_REG] = {
  */
 int board_early_init_f(void)
 {
+#if 0
 	enum env_multi_dev env_name = ENV_NAND;
 
 	if (get_boot_type() & 0x20)
 		env_name = ENV_MMC;
 
 	env_multi_set_current(env_name, 0);
+#endif
 
 	return 0;
 }
